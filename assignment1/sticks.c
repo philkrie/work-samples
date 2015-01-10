@@ -63,7 +63,7 @@ int main(int argc, char** argv)
         human = getHumanChoice();
         number_sticks = number_sticks - human;
         if (number_sticks <= 0){
-            printf("You win!\n");
+            printf("You lose!\n");
             break;
         }
         printf("\nThere are %d sticks on the board\n", number_sticks);
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
         number_sticks = number_sticks - computer;
         printf("Computer chooses %d\n", computer);
         if (number_sticks <= 0){
-            printf("You lose!\n");
+            printf("You win!\n");
             break;
         }
         printf("\nThere are %d sticks on the board\n", number_sticks);
