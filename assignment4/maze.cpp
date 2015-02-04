@@ -12,9 +12,16 @@
 #include <string>
 #include "maze.hpp"
 
-//Initialization of the maze, finds the
+//Initialization of the maze, finds
 Maze::Maze(int size) {
     mazeSize = size;
+}
+
+Maze::~Maze(){
+    for (int i = 0; i < mazeSize; i++) {
+        delete [] array2D[i];
+    }
+    delete [] array2D;
 }
 
 void Maze::readFromFile(std::ifstream &f){
@@ -187,4 +194,8 @@ bool Maze::atExit(){
         }
     }
     return false;
+}
+
+Maze::Direction Maze::getCurrentDirection(){
+    return direction;
 }

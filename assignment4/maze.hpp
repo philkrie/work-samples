@@ -12,7 +12,7 @@ class Maze
 {
 public:
 	Maze(int size);
-    ~Maze() {};
+    ~Maze();
 
 	enum Direction { DOWN, RIGHT, UP, LEFT };
 
@@ -30,7 +30,7 @@ public:
 	// set row and col to current position of 'x'
 	void getCurrentPosition(int &row, int &col);
 
-	// You can add more functions if you like
+    Direction getCurrentDirection();
 private:
     int mazeSize;
     char **array2D;

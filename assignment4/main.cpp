@@ -42,6 +42,8 @@ int main(int argc, const char *argv[]) {
 		int row, col;
 
 		// Solve the maze
+        
+        
 		do {
 
 			// Get current location of 'x' in the maze
