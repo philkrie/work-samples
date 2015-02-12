@@ -23,6 +23,7 @@ DateCipher::DateCipher(std::string date) : Cipher() {
 
 // Destructor
 DateCipher::~DateCipher() {
+    delete[] intarray;
 }
 
 
