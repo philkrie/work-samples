@@ -25,7 +25,7 @@ int main(int argc, const char *argv[]) {
     // 2. Test various ciphers
     
     
-    CaesarCipher caesar(0);
+    CaesarCipher caesar(18);
     encrypted = caesar.encrypt(input);
     std::cout << "Encrypted text:" << std::endl << encrypted;
     
