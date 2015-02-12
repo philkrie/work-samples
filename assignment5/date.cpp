@@ -30,7 +30,7 @@ DateCipher::~DateCipher() {
 std::string DateCipher::encrypt( std::string &inputText ){
     std::string text = inputText;
     int size = text.length();
-    this -> intarray   = new int[size]();
+    this -> intarray   = new int[size];
     
     int j = 0;
     
