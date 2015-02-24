@@ -1,0 +1,58 @@
+Based on "How to kill a dragon with various programming languages"
+
+By Roman Strobl on IX 20, 2007
+
+This funny text comes from Ibon from the dream team who got it from a Spanish blog.
+
+There's a beautiful princess, prisoner in the highest tower of a castle, guarded by a mighty dragon, and a fearless knight must rescue her…
+
+This is how each language would manage to rescue the princess from the hands of the dragon
+
+Java - Gets there, finds the dragon, develops a framework for dragon anihilation with multiple layers, writes several articles about the framework... But doesn't kill the dragon.
+
+.NET - Gets there, sees the idea of the Java developer and copies it. Tries to kill the dragon, but the monster eats him.
+
+C - Arrives, looks down at the dragon, pulls out his sword, beheads the dragon, finds the princess... And ignores her to see the last git checkins of linux kernel.
+
+C++ - Creates a basic needle, and gathers funcionality until he has a complex sword that he can barely understand... He kills the dragon, but gets stuck crossing the bridge because of memory leaks.
+
+COBOL - Arrives, sees the dragon and thinks that he is too old to kill a monster that big and rescuing the princess, so he leaves.
+
+Pascal - He prepares for 10 years to create a dragon anihilation system... When the moment comes, he discovers the program can only take lizards as an entry.
+
+VB - Builds a dragon destruction weapon based on several components, jumps to the back of the dragon and in the most critical time he discovers that the sword works only on rainy nights...
+
+Ruby - Arrives with massive fame, saying he is the best at anything and when he faces the dragon, he shows a lame motion picture of himself killing a dragon... The dragon eats him out of boredom.
+
+Smalltalk - Arrives, analyzes the dragon and princess, turns around and leaves, they are way too inferior.
+
+shell - Creates a very powerful dragon slaying weapon... But in the moment of truth, he can't remember how to use it.
+
+shell(2)- The guy approaches the dragon with a two line script that kills, cuts, disembowels, impales, chops to pieces and packs the beast, but when he runs it the script grows, it fattens, irritates and puts alcohol in the fire of the dragon...
+
+Assembler - He thinks he's doing the right and most efficient things... But he writes an A instead of a D and kills the princess.
+
+Fortran - Arrives and develops a 45-thousand-code-line-solution, kills the dragon, meets the princess... But she calls him a weakling and runs after the Java programmer who was elegant, and also rich.
+
+PROCESS ANALYST - Approaches the dragon with two tons of documentation, develops the unified dragon-killing process, he develops a DFD to free the princess and marry her, convinces the dragon that it's the best for him and it won't hurt. When he executes the process, he estimates the effort and the damage he will cause with a plan signed by the Pope, Buddha and Michael Jackson. Then he buys a couple of nukes, 45 cannons, an aircraft carrier and hires 300 heavily armed men... When all he needed was the sword he was holding in his hand in the beginning...
+
+CLIPPER: Sets up a routine that loads a codeblock array to insult the dragon, serenade the princess, load the sword in memory, beat the crap out of the dragon, clean the mess, prepare a raspberry milkshake for the princess, make love to her, take a bath, start the car, put it some gas and come back home. When he runs it, he gets a "Bound Error: Array Access" and the dragon eats him with fries.
+
+Lisp, where the famous knight-errant, after speaking with numerous experts in dragon-killing, and modeling the knowledge they posess, he programs the system, and when he runs it he realizes he forgot a parenthesis (bender the offender).
+
+HTML: Mounts a web on famous swords used to kill dragons, but he ignores the W3C standards. When he meets the dragon, he finds out the code isn't compatible with his browser, so he's left swordless. The dragon eats him as an appetizer.
+
+Prolog: Thinks he needs a weapon to kill the dragon. Searches in a catalog for 182014 weapons. By the time the princess dies of her age, he's achieved to know how to make every weapon starting with A: Atomic Bombs, Anti-Air Weapons, Arches, Ammunition, Axes...
+
+PHP: Creates a web page that when he executes it would eliminate the $dragon selecting from a weapons databese in MySQL over an Apache server. Nevertheless he forgot the WHERE in the DELETE query and kills the princess, the dragon, the peasants, the witch, the sorceror and the programmer himself.
+
+JavaScript: The programmer tries to kill  the great green dragon that spits fire throug his mouth. He creates a script that will delete the dragon when he loads a webpage, to create seconds after, some damsels to throw him flowers and make clapping sounds. Unfortunately he didn't take into account the DOM structure of the lizard, also known as Mozilla, and the only thing he gets is to fill his console of errors and that the Book of Mozilla tells how he was devoured.
+
+ActiveX: The programmers create a tunnel to enter the dragon's lair from the castle and run a program that will kil the dragon from a safe and prudential distance. The dragon discovers the tunnel, eats the workers who dug, the dragon slayers, and enslaves every servant in the castle. The castle becomes a dragon-breeding place, full of little dragons that the dragon sends in pop-ups to other castles. The untasty remains of the knights are put in cans of Spam and sent to other castles as well as a warning. (aquelquesiente)
+
+Basic. He creates a weapon able to kill paper dragons, but no matter how they improve it, they discover it's not good enough to kill any dragon bigger than a baby poodle.
+
+Matlab: They create a loop that calculates the trajectories to shoot a giant arrow at the dragon. The program works flawlessly. What they need now are the volunteers capable of launching the  arrow with the necessary strength and accuracy.
+
+Videogame Programmer : Spends two years programming a state-of-the-art sword with shaders and all. When the time comes to kill the dragon, he finds that half the knights aren't strong enough to raise the sword. 
+
