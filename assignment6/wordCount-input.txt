@@ -1,4 +1,5 @@
-inputs/input.txt
 inputs/AddictedToVi.txt
 inputs/C++Writer.txt
 inputs/Crashed.txt
+inputs/Same.txt
+inputs/Same2.txt
