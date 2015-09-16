@@ -31,4 +31,12 @@ class Solution{
         int index = absTopOfStack(stackNum);
         return buffer[index];
     }
+	
+	boolean isEmpty(int stackNum){
+		return stackPointer[stackNum] == -1;
+	}
+	
+	int absTopOfStack(int stackNum){
+		return stackNum * stackSize + stackPointer[stackNum];
+	}
 }
