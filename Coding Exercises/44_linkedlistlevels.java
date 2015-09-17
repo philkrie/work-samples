@@ -14,5 +14,6 @@ class Solution{
 		list.add(root);
 		createLevelLinkedLists(root.left, lists, level + 1);
 		createLevelLinkedLists(root.right, lists, level + 1);
+		
 	}
 }
