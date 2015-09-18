@@ -14,6 +14,6 @@
 		
 		m = m << i;
 		
-		result = result | m;
+		return result | m;
 	}
  }
