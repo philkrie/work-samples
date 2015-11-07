@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "def"
-#include "raw.h"
 #include "duckchat.h"
 #include "linked_list.h"
 
@@ -55,7 +54,7 @@ int main(int argc, char *argv[]){
 
     if(pid == 0){
         int rc;
-        struct sockaddr sender = {};
+        struct sockaddr sender = {0};
         socklen_t sendsize = sizeof(sender);
         
         for(;;){
@@ -65,17 +64,20 @@ int main(int argc, char *argv[]){
                                  0, (struct sockaddr*)&sender, &sendsize);
             (void) rc;
 
+            //Backspaces
             int i;
             for(i = 0; i < 500; i++){
                 printf("\b");
             }
 
+            //Parse a text_say message
             if(server_text->txt_type == TXT_SAY){
                 struct text_say* text_say = (struct text_say*) server_text;
                 printf("[%s][%s]: %s\n >",text_say->txt_channel,text_say->txt_username,text_say->txt_text);
 
             }
 
+            //Parse a text_list message
             if(server_text->txt_type == TXT_LIST){
                 struct text_list* text_list = (struct text_list*) server_text;
                 int num_channels = text_list->txt_nchannels;
@@ -87,6 +89,7 @@ int main(int argc, char *argv[]){
                 //Iterate through channel information to print our the number of channels
             }
             
+            //Parse a text_who message
             if(server_text->txt_type == TXT_WHO){
                 struct text_who* text_who = (struct text_who*) server_text;
                 printf("Users on channel %s:\n", text_who->txt_channel);
@@ -97,20 +100,20 @@ int main(int argc, char *argv[]){
                 }
             }
 
+            //Parse a text_error message
             if(server_text->txt_type == TXT_ERROR){
                 printf("TXT_ERROR\n");
                 struct text_error* text_error = (struct text_error*) server_text;
                 printf("ERROR: %s\n", text_error->txt_error);
             }
             free(server_text);
-            fflush(stdin);        
         }
     }
 
     if(pid > 0){
         struct request_login login;
         login.req_type = REQ_LOGIN;
-        strcpy(login.req_username, user_name);    
+        strncpy(login.req_username, user_name, strlen(user_name));    
 
         //Send message to server to login
         sendto(sd_parent, &login, sizeof(struct request_login), 0, (SA *) &server, sizeof(server));
@@ -130,22 +133,30 @@ int main(int argc, char *argv[]){
             fgets(buffer, SAY_MAX , stdin);
             //Reallocate text and place buffer characters into text array
             text = realloc(text, strlen(buffer));
-            strcat(text, buffer); /* note a '\n' is appended here everytime */
+            strncat(text, buffer, strlen(buffer)); /* note a '\n' is appended here everytime */
             text[strlen(text)-1] = '\0';
 
             if(text[0] == '/'){
                 if(strncmp(text, "/exit", 5) == 0){
-                    //Build request_say message
+                    //Build request_logout message
                     struct request_logout goodbye;
                     goodbye.req_type = REQ_LOGOUT;
 
                     //Send message to server
                     sendto(sd_parent, &goodbye, sizeof(struct request_logout), 
                                            0, (SA *) &server, sizeof(server));
+
+                    struct simple_channel_node* channel_it = list;
+                    struct simple_channel_node* temp;
+                    while(channel_it != NULL){
+                        temp = channel_it;
+                        channel_it = channel_it->next_channel;
+                        free(temp);
+                    }
                     exit(0);    
 
                 } else if(strncmp(text, "/join", 5) == 0){
-                    //Build request_say message
+                    //Build request_join message
                     struct request_join join;
                     join.req_type = REQ_JOIN;
 
@@ -177,14 +188,24 @@ int main(int argc, char *argv[]){
                     }
 
                 } else if(strncmp(text, "/leave", 6) == 0){
-                    //Build request_say message
+                    //Build request_leave message
                     struct request_leave leave;
                     leave.req_type = REQ_LEAVE;
                     
                     char channel[CHANNEL_MAX];
                     strncpy(channel, text+7, strlen(text)-1);
 
-                    if(strcmp(channel, "Common")==0){
+                    struct simple_channel_node* searcher;
+                    searcher = list;
+                    while(searcher != NULL){
+                        if(strcmp(searcher->channel_name, channel)==0){
+                            break; //Found channel
+                        }
+                        searcher = searcher->next_channel;
+                    }
+                    if(searcher == NULL){
+                        printf("You cannot leave a channel that you are not subscribed to\n");
+                    } else if(strcmp(channel, "Common")==0){
                         printf("You cannot leave Common. It is the default channel\n");
                     } else {
                         if(strcmp(current_channel->channel_name, channel)==0){
@@ -200,7 +221,7 @@ int main(int argc, char *argv[]){
                     }
 
                 } else if(strncmp(text, "/list", 5) == 0){
-                    //Build request_say message
+                    //Build request_list message
                     struct request_list list;
                     list.req_type = REQ_LIST;
 
@@ -209,7 +230,7 @@ int main(int argc, char *argv[]){
                                         0, (SA *) &server, sizeof(server));                
                 
                 } else if(strncmp(text, "/who", 4) == 0){
-                    //Build request_say message
+                    //Build request_who message
                     struct request_who who;
                     who.req_type = REQ_WHO;
                     

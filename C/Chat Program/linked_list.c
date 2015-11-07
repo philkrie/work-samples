@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "def"
-#include "raw.h"
 #include "duckchat.h"
 #include "linked_list.h"
 

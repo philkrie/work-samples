@@ -2,11 +2,24 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include "def"
-#include "raw.h"
 #include "duckchat.h"
 #include "linked_list.h"
 
-
+//Method for validating a user is logged in
+int user_validate(struct user_node* list, char* sa_data){
+    struct user_node* user_it = list;
+            if(user_it->next_user == NULL){
+                return 0;
+            } 
+            user_it = user_it->next_user; //Move past Server base user
+            while(user_it != NULL){
+                 if(strcmp(user_it->user_address.sa_data, sa_data)==0){
+                    return 1;
+                 }
+                 user_it = user_it->next_user;
+            }
+            return 0;
+}
 
 int main(int argc, char *argv[]) {
     (void) argc;
@@ -54,7 +67,7 @@ int main(int argc, char *argv[]) {
     user_list->next_user = NULL;
 
     for(;;){
-        struct sockaddr sender = {};
+        struct sockaddr sender = {0};
         socklen_t sendsize = sizeof(sender);
 
         //Our request message that we will recieve
@@ -63,7 +76,43 @@ int main(int argc, char *argv[]) {
                        0, (struct sockaddr*)&sender, &sendsize);
         (void) rc;
         
-        if(recieving->req_type == REQ_SAY){
+        if(recieving->req_type == REQ_LOGIN){
+            //A new user has joined the server and is "logging in"
+            //Send them welcome message
+            //Add them to the user list. If first user, initialize user list.
+            //Parse message
+            printf("Received a REQ_LOGIN message\n");
+            struct request_login* recieving_login = (struct request_login*) recieving;
+            printf("Received login request from user %s\n", recieving_login->req_username);
+            printf("Placing %s into Common channel\n", recieving_login->req_username);
+
+            //Add user to the user list
+            push_user(user_list, recieving_login->req_username, sender);
+            
+             //Add user to channel "Common" and add user to the user channel
+            if(channel_list->channels_users == NULL){
+                channel_list->channels_users = malloc(sizeof(struct user_node));
+                channel_list->channels_users->user_address = sender;
+                channel_list->channels_users->next_user = NULL; 
+                strcpy(channel_list->channels_users->user_name, recieving_login->req_username);
+                channel_list->channels_users->users_channels = malloc(sizeof(struct channel_node));
+                strcpy(channel_list->channels_users->users_channels->channel_name,"Common");
+                channel_list->channels_users->users_channels->next_channel = NULL;
+            } else {
+                push_user(channel_list->channels_users, recieving_login->req_username, sender);
+            }
+        }
+
+        else if(user_validate(user_list, sender.sa_data) == 0){
+            printf("This user has not yet logged in\n");
+            struct text_error error;
+            error.txt_type = TXT_ERROR;
+            strcpy(error.txt_error, "You have not logged in. Please restart the client\n");
+            sendto(sd, &error, sizeof(struct text_error), 0, (SA *) &sender, sendsize);
+
+        }
+
+        else if(recieving->req_type == REQ_SAY){
             //We have recieved a message from a user on a channel.
             //We want to redirect this message to everyone who is a member of the channel
             //And with the username, which we determine serverside with a sock_addr comparison
@@ -104,34 +153,7 @@ int main(int argc, char *argv[]) {
             }
         }
         
-        if(recieving->req_type == REQ_LOGIN){
-            //A new user has joined the server and is "logging in"
-            //Send them welcome message
-            //Add them to the user list. If first user, initialize user list.
-            //Parse message
-            printf("Received a REQ_LOGIN message\n");
-            struct request_login* recieving_login = (struct request_login*) recieving;
-            printf("Received login request from user %s\n", recieving_login->req_username);
-            printf("Placing %s into Common channel\n", recieving_login->req_username);
-
-            //Add user to the user list
-            push_user(user_list, recieving_login->req_username, sender);
-            
-             //Add user to channel "Common" and add user to the user channel
-            if(channel_list->channels_users == NULL){
-                channel_list->channels_users = malloc(sizeof(struct user_node));
-                channel_list->channels_users->user_address = sender;
-                channel_list->channels_users->next_user = NULL; 
-                strcpy(channel_list->channels_users->user_name, recieving_login->req_username);
-                channel_list->channels_users->users_channels = malloc(sizeof(struct channel_node));
-                strcpy(channel_list->channels_users->users_channels->channel_name,"Common");
-                channel_list->channels_users->users_channels->next_channel = NULL;
-            } else {
-                push_user(channel_list->channels_users, recieving_login->req_username, sender);
-            }
-        }
-        
-        if(recieving->req_type == REQ_LOGOUT){
+        else if(recieving->req_type == REQ_LOGOUT){
             //Based on the senders sock_addr, remove them from the user list, and from all channel lists
             printf("Received a REQ_LOGOUT message\n");
 
@@ -154,14 +176,14 @@ int main(int argc, char *argv[]) {
             sendto(sd, &message, sizeof(struct text_say), 0, (SA *) &sender, sendsize);
         }
 
-        if(recieving->req_type == REQ_JOIN){
+        else if(recieving->req_type == REQ_JOIN){
+            //User wants to join a channel. If the channel already exists, let them join it
+            //If they are already in the channel, let them know that nothing has changed
+            //If the channel doesn't exist, create a new channel, and let them know they have joined it
             printf("Received a REQ_JOIN message\n");
             struct request_join* recieving_join = (struct request_join*) recieving;
             printf("User is asking to join: %s\n", recieving_join->req_channel);
 
-            //User wants to join a channel. If the channel already exists, let them join it
-            //If they are already in the channel, let them know that nothing has changed
-            //If the channel doesn't exist, create a new channel, and let them know they have joined it
 
             char sender_name[USERNAME_MAX];
             struct user_node* user_it = user_list;
@@ -215,14 +237,20 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        if(recieving->req_type == REQ_LEAVE){
+        else if(recieving->req_type == REQ_LEAVE){
+            //User wants to leave channel. Remove channel from users list and user from channels list
+            //If this list becomes empty, delete the channel (unless it is common)
             printf("Received a request_leave message\n");
             struct request_leave* recieving_leave = (struct request_leave*) recieving;
             printf("Received request to leave channel %s\n", recieving_leave->req_channel);
 
-            struct text_say message; //response
-            message.txt_type = TXT_SAY;
-
+            if(strcmp(recieving_leave->req_channel, "Common")==0){
+                printf("You may not leave Common, it is the default channel\n");
+                struct text_error error;
+                error.txt_type = TXT_ERROR;
+                strcpy(error.txt_error, "You may not delete Common. It is the default\n");
+                sendto(sd, &error, sizeof(struct text_error), 0, (SA *) &sender, sendsize);
+            }
             char sender_name[USERNAME_MAX];
             struct user_node* user_it = user_list;
             while(user_it != NULL){
@@ -241,18 +269,21 @@ int main(int argc, char *argv[]) {
                 channel_it = channel_it->next_channel;
             }
 
-            delete_user_from_user_list(&(channel_it->channels_users), sender_name);
-            delete_channel_from_channel_list(&(user_it->users_channels), recieving_leave->req_channel);
+            if(channel_it == NULL){
+                printf("This channel does not exist. Please try another channel\n");
+            } else {
+                delete_user_from_user_list(&(channel_it->channels_users), sender_name);
+                delete_channel_from_channel_list(&(user_it->users_channels), recieving_leave->req_channel);
 
-            if(channel_it->channels_users->next_user == NULL){
-                delete_channel_from_channel_list(&channel_list, recieving_leave->req_channel);
+                if(channel_it->channels_users->next_user == NULL){
+                    delete_channel_from_channel_list(&channel_list, recieving_leave->req_channel);
+                }
             }
 
-            strcpy(message.txt_text, "Success message recieved");
-
-            sendto(sd, &message, sizeof(struct text_say), 0, (SA *) &sender, sendsize);
+            
         }
-        if(recieving->req_type == REQ_LIST){
+        else if(recieving->req_type == REQ_LIST){
+            //Send the user a list of all of the channels on the server
             printf("Received a request_list message\n");
 
             struct channel_node* channel_it = channel_list;
@@ -276,7 +307,8 @@ int main(int argc, char *argv[]) {
             }
             sendto(sd, message, sizeof(struct text_say), 0, (SA *) &sender, sendsize);
         }
-        if(recieving->req_type == REQ_WHO){
+        else if(recieving->req_type == REQ_WHO){
+            //Send user list of all users on a channel
             printf("Received a REQUEST_WHO message\n");
             struct request_who* recieving_who = (struct request_who*) recieving;
             printf("Inquiring about users on %s\n", recieving_who->req_channel);

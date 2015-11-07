@@ -1,13 +1,13 @@
-CC=gcc -std=c99
+CC=gcc
 
-CFLAGS=-Wall -W -g -Werror
+CFLAGS=-Wall -W -g
 
 
 
 all: client server
 
-client: client.c raw.c
-	$(CC) client.c linked_list.c raw.c $(CFLAGS) -o client
+client: client.c
+	$(CC) client.c linked_list.c $(CFLAGS) -o client
 
 server: server.c 
 	$(CC) server.c linked_list.c $(CFLAGS) -o server
